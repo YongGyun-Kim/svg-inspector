@@ -1,0 +1,29 @@
+{
+  "name": "svg-inspector",
+  "version": "1.0.0",
+  "description": "Validate the SVG structure to prevent errors",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": {
+    "name": "YongGyun-Kim",
+    "email": "kyg7089@naver.com",
+    "url": "https://github.com/YongGyun-Kim"
+  },
+  "license": "MIT",
+  "keywords": [
+    "svg",
+    "validator",
+    "inspector",
+    "open-source"
+  ],
+  "bugs": {
+    "url": "https://github.com/YongGyun-Kim/svg-inspector/issues"
+  },
+  "homepage": "https://github.com/YongGyun-Kim/svg-inspector#readme",
+  "dependencies": {
+    "fast-xml-parser": "^5.0.8"
+  }
+}
