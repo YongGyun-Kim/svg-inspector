@@ -4,6 +4,10 @@
   "description": "Validate the SVG structure to prevent errors",
   "main": "index.js",
   "type": "module",
+  "exports": {
+    "types": "./index.d.ts",
+    "default": "./index.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
