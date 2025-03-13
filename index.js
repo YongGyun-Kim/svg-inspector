@@ -1,183 +1,333 @@
 // index.js
 import { XMLParser } from "fast-xml-parser";
 
-/**
- * Define allowed attributes and required attributes for each SVG element.
- */
+// Define global attributes and presentation attributes
+const globalAttrs = ["id", "class", "style", "lang", "xml:lang", "xml:space", "tabindex"];
+const presentationAttrs = [
+  "fill",
+  "stroke",
+  "stroke-width",
+  "opacity",
+  "fill-opacity",
+  "stroke-opacity",
+  "stroke-linecap",
+  "stroke-linejoin",
+  "stroke-miterlimit",
+  "stroke-dasharray",
+  "stroke-dashoffset",
+  "display",
+  "visibility",
+  "pointer-events",
+  "filter",
+  "mask",
+  "clip-path",
+  "clip-rule",
+  "font-family",
+  "font-size",
+  "font-weight",
+  "text-anchor",
+  "color",
+];
+
+// Define allowed SVG elements and their allowed (and required) attributes
+// These are based on MDN documentation for each element.
 const allowedElements = {
   svg: {
-    // The <svg> element must have the xmlns attribute.
     requiredAttrs: ["xmlns"],
-    allowedAttrs: ["xmlns", "width", "height", "viewBox"],
+    allowedAttrs: [...globalAttrs, ...presentationAttrs, "x", "y", "width", "height", "viewBox", "preserveAspectRatio", "xmlns", "version", "xmlns:xlink"],
   },
   g: {
-    allowedAttrs: ["transform"],
+    allowedAttrs: [...globalAttrs, ...presentationAttrs, "transform"],
   },
   rect: {
-    allowedAttrs: ["x", "y", "width", "height", "rx", "ry", "fill", "stroke", "transform"],
+    allowedAttrs: [...globalAttrs, ...presentationAttrs, "x", "y", "width", "height", "rx", "ry", "transform"],
   },
   circle: {
-    allowedAttrs: ["cx", "cy", "r", "fill", "stroke", "transform"],
+    allowedAttrs: [...globalAttrs, ...presentationAttrs, "cx", "cy", "r", "transform"],
   },
   ellipse: {
-    allowedAttrs: ["cx", "cy", "rx", "ry", "fill", "stroke", "transform"],
+    allowedAttrs: [...globalAttrs, ...presentationAttrs, "cx", "cy", "rx", "ry", "transform"],
   },
   line: {
-    allowedAttrs: ["x1", "y1", "x2", "y2", "stroke", "transform"],
+    allowedAttrs: [...globalAttrs, ...presentationAttrs, "x1", "y1", "x2", "y2", "transform"],
   },
   polyline: {
-    allowedAttrs: ["points", "fill", "stroke", "transform"],
+    allowedAttrs: [...globalAttrs, ...presentationAttrs, "points", "transform"],
   },
   polygon: {
-    allowedAttrs: ["points", "fill", "stroke", "transform"],
+    allowedAttrs: [...globalAttrs, ...presentationAttrs, "points", "transform"],
   },
   path: {
-    allowedAttrs: ["d", "fill", "stroke", "transform"],
+    requiredAttrs: ["d"],
+    allowedAttrs: [...globalAttrs, ...presentationAttrs, "d", "transform"],
   },
   text: {
-    allowedAttrs: ["x", "y", "dx", "dy", "text-anchor", "fill", "stroke", "transform"],
+    allowedAttrs: [...globalAttrs, ...presentationAttrs, "x", "y", "dx", "dy", "text-anchor", "transform"],
+  },
+  tspan: {
+    allowedAttrs: [...globalAttrs, ...presentationAttrs, "x", "y", "dx", "dy"],
+  },
+  textPath: {
+    requiredAttrs: ["href"],
+    allowedAttrs: [...globalAttrs, ...presentationAttrs, "href", "startOffset", "method", "spacing"],
+  },
+  linearGradient: {
+    requiredAttrs: ["id"],
+    allowedAttrs: [...globalAttrs, "gradientUnits", "gradientTransform", "x1", "y1", "x2", "y2", "spreadMethod", "href"],
+  },
+  radialGradient: {
+    requiredAttrs: ["id"],
+    allowedAttrs: [...globalAttrs, "gradientUnits", "gradientTransform", "cx", "cy", "r", "fx", "fy", "spreadMethod", "href"],
+  },
+  stop: {
+    requiredAttrs: ["offset"],
+    allowedAttrs: [...globalAttrs, "offset", "stop-color", "stop-opacity"],
+  },
+  use: {
+    requiredAttrs: ["href"],
+    allowedAttrs: [...globalAttrs, ...presentationAttrs, "x", "y", "width", "height", "href", "xlink:href", "transform"],
+  },
+  image: {
+    requiredAttrs: ["href", "width", "height"],
+    allowedAttrs: [...globalAttrs, ...presentationAttrs, "x", "y", "width", "height", "href", "xlink:href", "preserveAspectRatio", "transform"],
+  },
+  a: {
+    allowedAttrs: [...globalAttrs, ...presentationAttrs, "href", "xlink:href", "target", "download"],
   },
   defs: {
-    allowedAttrs: [],
+    allowedAttrs: [...globalAttrs],
   },
-  // Additional elements can be defined here if needed.
+  symbol: {
+    allowedAttrs: [...globalAttrs, "viewBox", "preserveAspectRatio"],
+  },
+  clipPath: {
+    requiredAttrs: ["id"],
+    allowedAttrs: [...globalAttrs, "clipPathUnits"],
+  },
+  mask: {
+    requiredAttrs: ["id"],
+    allowedAttrs: [...globalAttrs, "x", "y", "width", "height", "maskUnits", "maskContentUnits"],
+  },
+  filter: {
+    requiredAttrs: ["id"],
+    allowedAttrs: [...globalAttrs, "x", "y", "width", "height", "filterUnits", "primitiveUnits", "color-interpolation-filters"],
+  },
+  animate: {
+    requiredAttrs: ["attributeName", "dur"],
+    allowedAttrs: [
+      ...globalAttrs,
+      "attributeName",
+      "attributeType",
+      "from",
+      "to",
+      "by",
+      "dur",
+      "begin",
+      "end",
+      "repeatCount",
+      "fill",
+      "calcMode",
+      "values",
+      "keyTimes",
+      "keySplines",
+    ],
+  },
+  animateTransform: {
+    requiredAttrs: ["attributeName", "type", "dur"],
+    allowedAttrs: [
+      ...globalAttrs,
+      "attributeName",
+      "type",
+      "from",
+      "to",
+      "by",
+      "dur",
+      "begin",
+      "end",
+      "repeatCount",
+      "fill",
+      "calcMode",
+      "values",
+      "keyTimes",
+      "keySplines",
+    ],
+  },
+  set: {
+    requiredAttrs: ["attributeName", "to", "dur"],
+    allowedAttrs: [...globalAttrs, "attributeName", "to", "begin", "end", "fill"],
+  },
+  metadata: {
+    allowedAttrs: [...globalAttrs],
+  },
+  title: {
+    allowedAttrs: [...globalAttrs],
+  },
+  desc: {
+    allowedAttrs: [...globalAttrs],
+  },
+  style: {
+    allowedAttrs: [...globalAttrs, "type"],
+  },
+  script: {
+    allowedAttrs: [...globalAttrs, "type", "href", "xlink:href"],
+  },
+  foreignObject: {
+    allowedAttrs: [...globalAttrs, "x", "y", "width", "height", "transform"],
+  },
+  pattern: {
+    allowedAttrs: [
+      ...globalAttrs,
+      "x",
+      "y",
+      "width",
+      "height",
+      "viewBox",
+      "preserveAspectRatio",
+      "xmlns",
+      "version",
+      "xmlns:xlink",
+      "patternContentUnits",
+      "patternTransform",
+      "patternUnits",
+      "href",
+      "xlink:href",
+    ],
+  },
 };
 
-/**
- * Validates the transform attribute value.
- * This is a simplified check that ensures the value consists of allowed transform functions
- * (translate, scale, rotate, skewX, skewY, matrix) with parameters inside parentheses.
- *
- * @param {string} value - The transform attribute value.
- * @returns {boolean} - Returns true if the transform value is valid.
- */
-function isValidTransformValue(value) {
-  const allowedFunctions = ["translate", "scale", "rotate", "skewX", "skewY", "matrix"];
-  // This regex checks that the string consists of one or more allowed functions followed by parentheses containing any characters except a closing parenthesis.
-  const regex = new RegExp(`^(\\s*(?:${allowedFunctions.join("|")})\\s*\$begin:math:text$[^\\$end:math:text$]+\\)\\s*)+$`);
-  return regex.test(value);
+//////////////////////
+// Attribute Value Validation Functions
+//////////////////////
+
+// Validate numeric values (allowing negative, decimals, units, and scientific notation)
+function isValidNumericValue(value) {
+  const numericRegex = /^-?\d+(\.\d+)?([eE][+\-]?\d+)?(px|pt|pc|mm|cm|in|em|ex|ch|rem|vw|vh|vmin|vmax|%)?$/;
+  return numericRegex.test(value);
 }
 
-/**
- * Validates the SVG path "d" attribute value.
- * This is a simplified check that ensures the path data consists of allowed command letters and numbers.
- *
- * @param {string} value - The d attribute value.
- * @returns {boolean} - Returns true if the path data is in a valid format.
- */
+// Validate color values (hex, rgb/rgba, hsl/hsla, url() for paint servers, and CSS color names)
+function isValidColorValue(value) {
+  const colorRegex = /^(?:none|currentColor|inherit|transparent|url\(#.+\)|#[0-9A-Fa-f]{3,8}|(?:rgba?|hsla?)\([^)]*\)|[A-Za-z]+)$/;
+  return colorRegex.test(value);
+}
+
+// Validate the transform attribute value
+function isValidTransformValue(value) {
+  const transformRegex = /^(?:\s*(?:translate|scale|rotate|skewX|skewY|matrix)\s*\([^)]*\)\s*)+$/;
+  return transformRegex.test(value);
+}
+
+// Validate the path data (d attribute), including scientific notation
 function isValidPathData(value) {
-  // Allowed commands: M, m, Z, z, L, l, H, h, V, v, C, c, S, s, Q, q, T, t, A, a.
-  // This regex is a basic check and does not cover all edge cases.
-  const pathRegex = /^[MmZzLlHhVvCcSsQqTtAa0-9,\.\s\-+]+$/;
+  const pathRegex = /^[MmZzLlHhVvCcSsQqTtAa0-9,.\s+\-Ee]+$/;
   return pathRegex.test(value);
 }
 
-/**
- * Validates the format of attribute values.
- * It checks for numerical values with optional units, color formats, transform and path data formats, etc.
- *
- * @param {string} attr - The attribute name.
- * @param {string} value - The attribute value.
- * @returns {boolean} - Returns true if the attribute value is valid.
- */
+// Validate overall attribute value based on attribute type
 function isValidAttributeValue(attr, value) {
-  // Attributes that should have numeric values (or numbers with units)
   const numericAttrs = ["width", "height", "x", "y", "cx", "cy", "r", "rx", "ry", "x1", "y1", "x2", "y2"];
   if (numericAttrs.includes(attr)) {
-    // Allow numbers, decimals, and optional units.
-    if (!/^\d+(\.\d+)?(px|em|rem|%)?$/.test(value)) {
-      return false;
+    if (!isValidNumericValue(value)) {
+      return { valid: false, error: `Invalid numeric value for ${attr}: ${value}` };
+    }
+    const nonNegative = ["width", "height", "r", "rx", "ry"];
+    if (nonNegative.includes(attr) && parseFloat(value) < 0) {
+      return { valid: false, error: `${attr} should not be negative: ${value}` };
     }
   }
 
-  // Color related attributes: allow 'none', 'currentColor', hex colors, or simple color names.
-  if (attr === "fill" || attr === "stroke") {
-    if (!(value === "none" || value === "currentColor" || /^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$/.test(value) || /^[a-zA-Z]+$/.test(value))) {
-      return false;
+  if (["fill", "stroke", "stop-color", "flood-color", "lighting-color"].includes(attr)) {
+    if (!isValidColorValue(value)) {
+      return { valid: false, error: `Invalid color value for ${attr}: ${value}` };
     }
   }
 
-  // The viewBox attribute must consist of 4 numbers (separated by spaces or commas).
   if (attr === "viewBox") {
     const parts = value.trim().split(/[ ,]+/);
     if (parts.length !== 4 || parts.some((p) => isNaN(parseFloat(p)))) {
-      return false;
+      return { valid: false, error: `Invalid viewBox format: ${value}. Should be 4 numbers.` };
     }
   }
 
-  // Validate transform attribute.
-  if (attr === "transform") {
-    return isValidTransformValue(value);
+  if (attr === "transform" || attr === "gradientTransform" || attr === "patternTransform") {
+    if (!isValidTransformValue(value)) {
+      return { valid: false, error: `Invalid transform value: ${value}` };
+    }
   }
 
-  // Validate path data (d attribute).
   if (attr === "d") {
-    return isValidPathData(value);
+    if (!isValidPathData(value)) {
+      return { valid: false, error: `Invalid path data: ${value}` };
+    }
+    if (value.trim() === "") {
+      return { valid: false, error: "Path data is empty." };
+    }
   }
 
-  // Additional attribute validations can be implemented here.
-
-  return true;
+  // For other attributes (e.g., href) we simply treat the value as a string.
+  return { valid: true };
 }
 
-/**
- * Validates the attributes of a specific element.
- * It checks for:
- * - Existence of required attributes.
- * - Whether each attribute is in the allowed list.
- * - Whether the attribute value matches the required format.
- *
- * @param {string} elemName - The element name (e.g., "rect")
- * @param {object} attrs - The attributes object of the element.
- * @returns {boolean} - Returns true if all attributes are valid, false otherwise.
- */
+//////////////////////
+// Element Validation Functions
+//////////////////////
+
+// Validate the attributes of a specific element and collect all errors
 function validateAttributes(elemName, attrs) {
   const definition = allowedElements[elemName];
-  // If the element is not defined in the allowed list, return false.
+  const result = { valid: true, errors: [] };
+
   if (!definition) {
-    return false;
+    result.valid = false;
+    result.errors.push(`Element "${elemName}" is not allowed.`);
+    return result;
   }
 
-  // Check for required attributes.
+  // Check for required attributes
   if (definition.requiredAttrs) {
     for (const reqAttr of definition.requiredAttrs) {
-      if (!(reqAttr in attrs)) return false;
+      if (!(reqAttr in attrs)) {
+        result.valid = false;
+        result.errors.push(`Required attribute "${reqAttr}" missing from <${elemName}>.`);
+      }
     }
   }
 
-  // Validate each attribute against the allowed list and value format.
+  // Validate each attribute's value
   for (const attr in attrs) {
-    if (!definition.allowedAttrs.includes(attr)) {
-      return false;
+    // Allow global attributes, data- attributes, and event attributes
+    if (!definition.allowedAttrs.includes(attr) && !globalAttrs.includes(attr) && !attr.startsWith("data-") && !/^on[A-Za-z]+$/.test(attr)) {
+      result.valid = false;
+      result.errors.push(`Attribute "${attr}" is not allowed in <${elemName}>.`);
+      continue;
     }
-    if (!isValidAttributeValue(attr, attrs[attr])) {
-      return false;
+    const valueResult = isValidAttributeValue(attr, attrs[attr]);
+    if (!valueResult.valid) {
+      result.valid = false;
+      result.errors.push(`On <${elemName}>: ${valueResult.error}`);
     }
   }
-  return true;
+
+  return result;
 }
 
-/**
- * Recursively validates an element and its children in the parsed SVG JSON.
- *
- * @param {string} elemName - The element name (e.g., "svg", "rect", etc.)
- * @param {object} elemObj - The JSON object representation of the element.
- * @returns {boolean} - Returns true if the element and all its children are valid, false otherwise.
- */
-function validateElement(elemName, elemObj) {
-  // In fast-xml-parser, attributes are prefixed with "@_".
+// Recursively validate an element and its children, collecting all violations
+function validateElement(elemName, elemObj, parentName = null) {
+  // Exclude validation of content inside <foreignObject>
+  if (elemName === "foreignObject") {
+    return { valid: true, errors: [] };
+  }
+
   const attrs = {};
   const children = [];
+  const result = { valid: true, errors: [] };
 
-  // Iterate over each key in the element object.
+  // Separate attributes (prefixed with "@_") and child elements
   for (const key in elemObj) {
     if (key.startsWith("@_")) {
-      // Attribute: remove "@_" prefix.
       const attrName = key.slice(2);
       attrs[attrName] = elemObj[key];
     } else {
-      // Child elements: the key represents the element name.
-      // Child elements can be a single object or an array.
       if (Array.isArray(elemObj[key])) {
         elemObj[key].forEach((child) => {
           children.push({ name: key, obj: child });
@@ -188,35 +338,56 @@ function validateElement(elemName, elemObj) {
     }
   }
 
-  // Validate the current element's attributes.
-  if (!validateAttributes(elemName, attrs)) {
-    return false;
+  // Validate the attributes of the current element
+  const attrResult = validateAttributes(elemName, attrs);
+  if (!attrResult.valid) {
+    result.valid = false;
+    result.errors.push(...attrResult.errors);
   }
 
-  // Recursively validate each child element.
+  // Example: <stop> elements must be inside <linearGradient> or <radialGradient>
+  if (elemName === "stop" && parentName !== "linearGradient" && parentName !== "radialGradient") {
+    result.valid = false;
+    result.errors.push(`<stop> must be inside a <linearGradient> or <radialGradient>.`);
+  }
+
+  // Recursively validate each child element
   for (const child of children) {
-    // If the child is simple text, skip it.
     if (typeof child.obj === "string") continue;
-    // If the element is not in the allowed list, fail validation.
     if (!allowedElements.hasOwnProperty(child.name)) {
-      return false;
+      result.valid = false;
+      result.errors.push(`Element "${child.name}" is not allowed in <${elemName}>.`);
+      continue;
     }
-    if (!validateElement(child.name, child.obj)) {
-      return false;
+    const childResult = validateElement(child.name, child.obj, elemName);
+    if (!childResult.valid) {
+      result.valid = false;
+      result.errors.push(...childResult.errors);
     }
   }
-  return true;
+
+  return result;
 }
+
+//////////////////////
+// Main Validation Function
+//////////////////////
 
 /**
  * Validates the provided SVG string.
- * Returns true if the SVG passes all validations; otherwise, returns false.
+ * If validation passes, returns { isValid: true, errors: [] }.
+ * If there are violations, returns { isValid: false, errors: [error messages] }.
  *
- * @param {string} svgString - The SVG content as a string.
- * @returns {boolean} - True if the SVG is valid, false otherwise.
+ * @param {string} svgString - The SVG content as a string
+ * @returns {object} - Validation result object containing isValid flag and errors array
  */
 export default function validateSVG(svgString) {
-  if (typeof svgString !== "string") return false;
+  const result = { isValid: false, errors: [] };
+
+  if (typeof svgString !== "string") {
+    result.errors.push("Input is not a string.");
+    return result;
+  }
 
   const parser = new XMLParser({
     ignoreAttributes: false,
@@ -228,11 +399,17 @@ export default function validateSVG(svgString) {
   try {
     jsonObj = parser.parse(svgString);
   } catch (error) {
-    return false;
+    result.errors.push(`XML parsing error: ${error.message}`);
+    return result;
   }
 
-  // Check if the root element is <svg>.
-  if (!jsonObj.svg) return false;
+  if (!jsonObj.svg) {
+    result.errors.push("Root element is not <svg>.");
+    return result;
+  }
 
-  return validateElement("svg", jsonObj.svg);
+  const validationResult = validateElement("svg", jsonObj.svg);
+  result.isValid = validationResult.valid;
+  result.errors = validationResult.errors;
+  return result;
 }
