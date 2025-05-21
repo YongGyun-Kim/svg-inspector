@@ -401,7 +401,7 @@ const deprecatedAttributes = [
 function isValidTransformValue(value) {
   const allowedFunctions = ["translate", "scale", "rotate", "skewX", "skewY", "matrix"];
   // Regex: one or more function calls, with no invalid chars between.
-  const regex = new RegExp(`^(?:\\s*(?:${allowedFunctions.join("|")})\\s*\$begin:math:text$[^\\$end:math:text$]*\\)\\s*)+$`);
+  const regex = new RegExp(`^(?:\\s*(?:${allowedFunctions.join("|")})\\s*\\([^\\)]*\\)\\s*)+$`)
   if (!regex.test(value)) {
     return {
       valid: false,
