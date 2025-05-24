@@ -1,0 +1,19 @@
+<svg width="200" height="200">
+  <!-- Missing required xmlns attribute -->
+  <defs>
+    <unknown-element id="invalid">
+      <!-- Unknown element -->
+      <stop offset="0%" stop-color="#ff0000" />
+      <!-- Stop outside of gradient -->
+    </unknown-element>
+  </defs>
+  
+  <rect x="10" y="10" width="invalid-value" height="60" nonexistent-attr="value">
+    <!-- Invalid attribute value and disallowed attribute -->
+    <circle cx="50" cy="50" r="20" />
+    <!-- Circle inside rect (structural violation) -->
+  </rect>
+  
+  <path d="Invalid path data" stroke="#000" />
+  <!-- Invalid path data -->
+</svg> 

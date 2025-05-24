@@ -60,7 +60,7 @@ validateSVG(svgString: string): ValidationResult
 • isValid (boolean): true if the SVG complies with the specifications; otherwise, false.
 • errors (string[]): An array of error messages detailing all detected violations.
 
-##TypeScript Support
+## TypeScript Support
 
 The module includes type definitions. You can import them as follows:
 
@@ -90,9 +90,31 @@ declare module "svg-inspector" {
 }
 ```
 
+## Testing
+
+The library includes comprehensive test coverage to ensure reliability. To run the tests:
+
+```sh
+npm test
+```
+
+The test suite includes:
+
+- Basic functionality tests
+- Element validation tests
+- Attribute validation tests
+- Advanced SVG feature tests (gradients, paths, transforms)
+- Edge case tests
+- File-based tests
+
 ## Contributing
 
 Contributions are welcome! Please open an issue or submit a pull request with any suggestions, improvements, or bug fixes.
+
+## Known Issues
+
+- The validator currently has limited support for validating `url()` references in attributes like `fill` and `stroke`.
+- Some complex filter effects might not be fully validated according to the specification.
 
 ## License
 

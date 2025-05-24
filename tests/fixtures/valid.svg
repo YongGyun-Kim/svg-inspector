@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <defs>
+    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#007bff" stop-opacity="1" />
+      <stop offset="100%" stop-color="#00ff88" stop-opacity="1" />
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3" />
+      <feOffset dx="2" dy="2" result="offsetblur" />
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.5" />
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <g transform="translate(10, 10)">
+    <rect x="10" y="10" width="100" height="60" rx="10" fill="url(#gradient)" filter="url(#shadow)" />
+    <circle cx="140" cy="40" r="30" fill="#ff6b6b" stroke="#333" stroke-width="2" />
+    <path d="M30,100 Q90,30 150,100" stroke="#6c757d" stroke-width="4" fill="none" />
+    <text x="50" y="120" font-family="Arial" font-size="16" fill="#495057">SVG Inspector</text>
+  </g>
+</svg> 
