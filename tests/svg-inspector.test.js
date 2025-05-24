@@ -10,7 +10,7 @@ describe("SVG Inspector 기본 기능 테스트", () => {
 
     const result = validateSVG(validSVG);
     expect(result.isValid).toBe(true);
-    expect(result.errors.length).toBe(0);
+    expect(result.errors).toHaveLength(0);
   });
 
   test("비어있는 SVG 문자열을 검증합니다", () => {
@@ -132,7 +132,7 @@ describe("SVG 고급 기능 테스트", () => {
     );
 
     // 에러가 없거나 특정 에러만 있는지 확인
-    expect(actualErrors.length).toBe(0);
+    expect(actualErrors).toHaveLength(0);
   });
 
   test("경로 데이터가 유효한 SVG를 검증합니다", () => {
@@ -144,7 +144,7 @@ describe("SVG 고급 기능 테스트", () => {
 
     const result = validateSVG(svgWithValidPath);
     expect(result.isValid).toBe(true);
-    expect(result.errors.length).toBe(0);
+    expect(result.errors).toHaveLength(0);
   });
 
   test("변환이 포함된 유효한 SVG를 검증합니다", () => {
@@ -158,6 +158,6 @@ describe("SVG 고급 기능 테스트", () => {
 
     const result = validateSVG(svgWithTransform);
     expect(result.isValid).toBe(true);
-    expect(result.errors.length).toBe(0);
+    expect(result.errors).toHaveLength(0);
   });
 });

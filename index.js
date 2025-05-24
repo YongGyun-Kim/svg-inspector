@@ -7,7 +7,11 @@ import { XMLParser } from "fast-xml-parser";
 const coreAttributes = ["id", "xml:base", "xml:lang"];
 // Note: 'xml:space' is omitted because it's deprecated in SVG 2.
 
-const conditionalProcessingAttributes = ["requiredFeatures", "requiredExtensions", "systemLanguage"];
+const conditionalProcessingAttributes = [
+  "requiredFeatures",
+  "requiredExtensions",
+  "systemLanguage",
+];
 
 const eventAttributes = [
   // SVG 1.1 graphical event attributes
@@ -183,12 +187,34 @@ const allowedElements = {
 
   // Paint server elements
   linearGradient: {
-    allowedAttrs: ["id", "x1", "y1", "x2", "y2", "gradientUnits", "gradientTransform", "spreadMethod", "href"],
+    allowedAttrs: [
+      "id",
+      "x1",
+      "y1",
+      "x2",
+      "y2",
+      "gradientUnits",
+      "gradientTransform",
+      "spreadMethod",
+      "href",
+    ],
     // 'id' is included here for clarity (though it's a core attribute), since gradients often have an id to reference.
     // xlink:href (deprecated) replaced by href to reference another gradient.
   },
   radialGradient: {
-    allowedAttrs: ["id", "cx", "cy", "r", "fx", "fy", "fr", "gradientUnits", "gradientTransform", "spreadMethod", "href"],
+    allowedAttrs: [
+      "id",
+      "cx",
+      "cy",
+      "r",
+      "fx",
+      "fy",
+      "fr",
+      "gradientUnits",
+      "gradientTransform",
+      "spreadMethod",
+      "href",
+    ],
     // 'fr' (focal radius) is an SVG 2 addition (for future mesh gradients; browsers may not support yet).
   },
   stop: {
@@ -196,12 +222,33 @@ const allowedElements = {
     // stop-color and stop-opacity are presentation attributes but we list them for clarity.
   },
   pattern: {
-    allowedAttrs: ["x", "y", "width", "height", "patternUnits", "patternContentUnits", "patternTransform", "viewBox", "preserveAspectRatio", "href"],
+    allowedAttrs: [
+      "x",
+      "y",
+      "width",
+      "height",
+      "patternUnits",
+      "patternContentUnits",
+      "patternTransform",
+      "viewBox",
+      "preserveAspectRatio",
+      "href",
+    ],
   },
 
   // Marker/Mask/Clip
   marker: {
-    allowedAttrs: ["id", "refX", "refY", "markerUnits", "markerWidth", "markerHeight", "orient", "viewBox", "preserveAspectRatio"],
+    allowedAttrs: [
+      "id",
+      "refX",
+      "refY",
+      "markerUnits",
+      "markerWidth",
+      "markerHeight",
+      "orient",
+      "viewBox",
+      "preserveAspectRatio",
+    ],
     // orient can be a specific angle or "auto" or "auto-start-reverse"
   },
   mask: {
@@ -219,30 +266,84 @@ const allowedElements = {
   feBlend: { allowedAttrs: ["in", "in2", "mode", "result"] },
   feColorMatrix: { allowedAttrs: ["in", "type", "values", "result"] },
   feComponentTransfer: { allowedAttrs: ["in", "result"] },
-  feComposite: { allowedAttrs: ["in", "in2", "operator", "k1", "k2", "k3", "k4", "result"] },
-  feConvolveMatrix: {
-    allowedAttrs: ["in", "order", "kernelMatrix", "divisor", "bias", "targetX", "targetY", "edgeMode", "kernelUnitLength", "preserveAlpha", "result"],
+  feComposite: {
+    allowedAttrs: ["in", "in2", "operator", "k1", "k2", "k3", "k4", "result"],
   },
-  feDiffuseLighting: { allowedAttrs: ["in", "surfaceScale", "diffuseConstant", "kernelUnitLength", "result"] },
-  feDisplacementMap: { allowedAttrs: ["in", "in2", "scale", "xChannelSelector", "yChannelSelector", "result"] },
+  feConvolveMatrix: {
+    allowedAttrs: [
+      "in",
+      "order",
+      "kernelMatrix",
+      "divisor",
+      "bias",
+      "targetX",
+      "targetY",
+      "edgeMode",
+      "kernelUnitLength",
+      "preserveAlpha",
+      "result",
+    ],
+  },
+  feDiffuseLighting: {
+    allowedAttrs: ["in", "surfaceScale", "diffuseConstant", "kernelUnitLength", "result"],
+  },
+  feDisplacementMap: {
+    allowedAttrs: ["in", "in2", "scale", "xChannelSelector", "yChannelSelector", "result"],
+  },
   feDistantLight: { allowedAttrs: ["azimuth", "elevation"] },
-  feDropShadow: { allowedAttrs: ["dx", "dy", "stdDeviation", "flood-color", "flood-opacity", "result"] },
+  feDropShadow: {
+    allowedAttrs: ["dx", "dy", "stdDeviation", "flood-color", "flood-opacity", "result"],
+  },
   feFlood: { allowedAttrs: ["flood-color", "flood-opacity", "result"] },
-  feFuncA: { allowedAttrs: ["type", "tableValues", "slope", "intercept", "amplitude", "exponent", "offset"] },
-  feFuncB: { allowedAttrs: ["type", "tableValues", "slope", "intercept", "amplitude", "exponent", "offset"] },
-  feFuncG: { allowedAttrs: ["type", "tableValues", "slope", "intercept", "amplitude", "exponent", "offset"] },
-  feFuncR: { allowedAttrs: ["type", "tableValues", "slope", "intercept", "amplitude", "exponent", "offset"] },
-  feGaussianBlur: { allowedAttrs: ["in", "stdDeviation", "edgeMode", "result"] },
-  feImage: { allowedAttrs: ["href", "x", "y", "width", "height", "preserveAspectRatio", "result"] },
+  feFuncA: {
+    allowedAttrs: ["type", "tableValues", "slope", "intercept", "amplitude", "exponent", "offset"],
+  },
+  feFuncB: {
+    allowedAttrs: ["type", "tableValues", "slope", "intercept", "amplitude", "exponent", "offset"],
+  },
+  feFuncG: {
+    allowedAttrs: ["type", "tableValues", "slope", "intercept", "amplitude", "exponent", "offset"],
+  },
+  feFuncR: {
+    allowedAttrs: ["type", "tableValues", "slope", "intercept", "amplitude", "exponent", "offset"],
+  },
+  feGaussianBlur: {
+    allowedAttrs: ["in", "stdDeviation", "edgeMode", "result"],
+  },
+  feImage: {
+    allowedAttrs: ["href", "x", "y", "width", "height", "preserveAspectRatio", "result"],
+  },
   feMerge: { allowedAttrs: ["result"] },
   feMergeNode: { allowedAttrs: ["in"] },
   feMorphology: { allowedAttrs: ["in", "operator", "radius", "result"] },
   feOffset: { allowedAttrs: ["in", "dx", "dy", "result"] },
   fePointLight: { allowedAttrs: ["x", "y", "z"] },
-  feSpecularLighting: { allowedAttrs: ["in", "surfaceScale", "specularConstant", "specularExponent", "kernelUnitLength", "result"] },
-  feSpotLight: { allowedAttrs: ["x", "y", "z", "pointsAtX", "pointsAtY", "pointsAtZ", "specularExponent", "limitingConeAngle"] },
+  feSpecularLighting: {
+    allowedAttrs: [
+      "in",
+      "surfaceScale",
+      "specularConstant",
+      "specularExponent",
+      "kernelUnitLength",
+      "result",
+    ],
+  },
+  feSpotLight: {
+    allowedAttrs: [
+      "x",
+      "y",
+      "z",
+      "pointsAtX",
+      "pointsAtY",
+      "pointsAtZ",
+      "specularExponent",
+      "limitingConeAngle",
+    ],
+  },
   feTile: { allowedAttrs: ["in", "result"] },
-  feTurbulence: { allowedAttrs: ["baseFrequency", "numOctaves", "seed", "stitchTiles", "type", "result"] },
+  feTurbulence: {
+    allowedAttrs: ["baseFrequency", "numOctaves", "seed", "stitchTiles", "type", "result"],
+  },
 
   // Animation elements (SMIL)
   animate: {
@@ -315,7 +416,16 @@ const allowedElements = {
     // Must be child of animateMotion. xlink:href deprecated in SVG2.
   },
   set: {
-    allowedAttrs: ["attributeName", "to", "begin", "dur", "end", "repeatCount", "repeatDur", "fill"],
+    allowedAttrs: [
+      "attributeName",
+      "to",
+      "begin",
+      "dur",
+      "end",
+      "repeatCount",
+      "repeatDur",
+      "fill",
+    ],
     // The <set> element (for discrete set of an attribute) uses a limited subset of animation attributes.
   },
   // SVG 2 new/discouraged animation:
@@ -401,7 +511,7 @@ const deprecatedAttributes = [
 function isValidTransformValue(value) {
   const allowedFunctions = ["translate", "scale", "rotate", "skewX", "skewY", "matrix"];
   // Regex: one or more function calls, with no invalid chars between.
-  const regex = new RegExp(`^(?:\\s*(?:${allowedFunctions.join("|")})\\s*\\([^\\)]*\\)\\s*)+$`)
+  const regex = new RegExp(`^(?:\\s*(?:${allowedFunctions.join("|")})\\s*\\([^\\)]*\\)\\s*)+$`);
   if (!regex.test(value)) {
     return {
       valid: false,
@@ -417,7 +527,7 @@ function isValidTransformValue(value) {
  * This is a basic check and does not fully validate the sequence of commands.
  */
 function isValidPathData(value) {
-  const pathRegex = /^[MmZzLlHhVvCcSsQqTtAa0-9,\.\s\-+]+$/;
+  const pathRegex = /^[MmZzLlHhVvCcSsQqTtAa0-9,.\s\-+]+$/;
   if (!pathRegex.test(value)) {
     return {
       valid: false,
@@ -441,7 +551,24 @@ function isValidAttributeValue(attr, value) {
   }
 
   // Numeric attributes (could be plain number or number with unit or percentage)
-  const numericAttrs = ["width", "height", "x", "y", "cx", "cy", "r", "rx", "ry", "x1", "y1", "x2", "y2", "dx", "dy", "offset"];
+  const numericAttrs = [
+    "width",
+    "height",
+    "x",
+    "y",
+    "cx",
+    "cy",
+    "r",
+    "rx",
+    "ry",
+    "x1",
+    "y1",
+    "x2",
+    "y2",
+    "dx",
+    "dy",
+    "offset",
+  ];
   if (numericAttrs.includes(attr)) {
     // Pattern: number (int or float) optionally followed by a unit (px, em, %, etc.)
     if (!/^[-+]?\d*\.?\d+(%|[a-zA-Z]{2})?$/.test(value)) {
@@ -555,7 +682,9 @@ function validateAttributes(elemName, attrs) {
     }
 
     // Check if attribute is allowed either in element-specific list or in global lists.
-    const attrAllowed = (definition.allowedAttrs && definition.allowedAttrs.includes(attr)) || globalAttributes.includes(attr);
+    const attrAllowed =
+      (definition.allowedAttrs && definition.allowedAttrs.includes(attr)) ||
+      globalAttributes.includes(attr);
     if (!attrAllowed) {
       result.valid = false;
       result.errors.push(`Attribute "${attr}" not allowed in <${elemName}>`);
@@ -582,7 +711,17 @@ function isAllowedChild(parentName, childName) {
   // Define special parent-child relationships:
   // Gradients can only contain <stop> (and animation/descriptive elements).
   if (parentName === "linearGradient" || parentName === "radialGradient") {
-    const allowedChildren = ["stop", "animate", "animateTransform", "animateMotion", "animateColor", "set", "desc", "title", "metadata"];
+    const allowedChildren = [
+      "stop",
+      "animate",
+      "animateTransform",
+      "animateMotion",
+      "animateColor",
+      "set",
+      "desc",
+      "title",
+      "metadata",
+    ];
     return allowedChildren.includes(childName);
   }
   // <stop> should only appear in gradients (linearGradient or radialGradient)
@@ -599,25 +738,66 @@ function isAllowedChild(parentName, childName) {
   }
   // <animateMotion> cannot have <path> elements as children except via <mpath> (which is handled above).
   // In SVG, shapes generally cannot contain other shapes (they are not containers).
-  if (["rect", "circle", "ellipse", "line", "polyline", "polygon", "path", "image", "use"].includes(parentName)) {
+  if (
+    ["rect", "circle", "ellipse", "line", "polyline", "polygon", "path", "image", "use"].includes(
+      parentName
+    )
+  ) {
     // Graphics elements (except text) should not have any children in markup (they are empty or only descriptive/animation).
-    const allowedChildren = ["desc", "title", "metadata", "animate", "animateTransform", "animateMotion", "set"];
+    const allowedChildren = [
+      "desc",
+      "title",
+      "metadata",
+      "animate",
+      "animateTransform",
+      "animateMotion",
+      "set",
+    ];
     return allowedChildren.includes(childName);
   }
   // <text> can have tspan, textPath, a (for links), and possibly <set>/<animate> and descriptive.
   if (parentName === "text") {
-    const allowedChildren = ["tspan", "textPath", "a", "animate", "set", "animateTransform", "animateMotion", "desc", "title", "metadata"];
+    const allowedChildren = [
+      "tspan",
+      "textPath",
+      "a",
+      "animate",
+      "set",
+      "animateTransform",
+      "animateMotion",
+      "desc",
+      "title",
+      "metadata",
+    ];
     return allowedChildren.includes(childName);
   }
   // <tspan> can contain other <tspan> or textPath? In SVG2, <tspan> is like a span of text, can contain other tspans or not?
   // We'll allow nested tspan and descriptive/animation.
   if (parentName === "tspan") {
-    const allowedChildren = ["tspan", "animate", "set", "animateTransform", "animateMotion", "desc", "title", "metadata"];
+    const allowedChildren = [
+      "tspan",
+      "animate",
+      "set",
+      "animateTransform",
+      "animateMotion",
+      "desc",
+      "title",
+      "metadata",
+    ];
     return allowedChildren.includes(childName);
   }
   // <textPath> should contain text content (tspan or text data), no shapes.
   if (parentName === "textPath") {
-    const allowedChildren = ["tspan", "animate", "set", "animateTransform", "animateMotion", "desc", "title", "metadata"];
+    const allowedChildren = [
+      "tspan",
+      "animate",
+      "set",
+      "animateTransform",
+      "animateMotion",
+      "desc",
+      "title",
+      "metadata",
+    ];
     return allowedChildren.includes(childName);
   }
   // <a> (link) is a container that can hold any graphics or text (acts like a <g> or <text> depending on context).
@@ -693,9 +873,20 @@ function validateElement(elemName, elemObj, parentName = null) {
       continue;
     }
     // Check if the child element is recognized in SVG.
-    if (!allowedElements.hasOwnProperty(childName)) {
+    if (!Object.prototype.hasOwnProperty.call(allowedElements, childName)) {
       // Special case: check if childName is one of the HTML elements allowed in SVG 2 (video, audio, canvas, iframe, etc.).
-      const htmlEmbedded = ["video", "audio", "canvas", "iframe", "iframe", "math", "html", "body", "div", "span"];
+      const htmlEmbedded = [
+        "video",
+        "audio",
+        "canvas",
+        "iframe",
+        "iframe",
+        "math",
+        "html",
+        "body",
+        "div",
+        "span",
+      ];
       if (htmlEmbedded.includes(childName)) {
         // We will treat this as valid foreign content (assuming inside foreignObject or allowed inline by SVG2).
         // Skip SVG-specific validation for this foreign element's subtree.

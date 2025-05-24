@@ -1,3 +1,4 @@
+/* eslint-disable quotes, prettier/prettier */
 import validateSVG from "../index.js";
 
 describe("SVG Inspector 엣지 케이스 테스트", () => {
@@ -14,20 +15,24 @@ describe("SVG Inspector 엣지 케이스 테스트", () => {
 
   test("매우 큰 SVG를 검증합니다", () => {
     // 많은 수의 rect 요소가 있는 SVG를 생성합니다
-    let largeContent = '<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000">\n';
+    let largeContent =
+      '<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000">\n';
     for (let i = 0; i < 100; i++) {
-      largeContent += `  <rect x="${i * 10}" y="${i * 10}" width="8" height="8" fill="#${i % 10}${i % 10}${i % 10}" />\n`;
+      largeContent += `  <rect x="${i * 10}" y="${i * 10}" width="8" height="8" fill="#${i % 10}${
+        i % 10
+      }${i % 10}" />\n`;
     }
     largeContent += "</svg>";
 
     const result = validateSVG(largeContent);
     expect(result.isValid).toBe(true);
-    expect(result.errors.length).toBe(0);
+    expect(result.errors).toHaveLength(0);
   });
 
   test("중첩된 그룹이 있는 SVG를 검증합니다", () => {
     // 깊이 중첩된 그룹 구조를 가진 SVG를 생성합니다
-    let deeplyNestedContent = '<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100">\n';
+    let deeplyNestedContent =
+      '<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100">\n';
     deeplyNestedContent += '  <g transform="translate(10,10)">\n';
     for (let i = 0; i < 10; i++) {
       deeplyNestedContent += `    ${"  ".repeat(i)}<g transform="translate(1,1)">\n`;
@@ -41,7 +46,7 @@ describe("SVG Inspector 엣지 케이스 테스트", () => {
 
     const result = validateSVG(deeplyNestedContent);
     expect(result.isValid).toBe(true);
-    expect(result.errors.length).toBe(0);
+    expect(result.errors).toHaveLength(0);
   });
 
   test("특수 문자가 포함된 SVG를 검증합니다", () => {
@@ -53,7 +58,7 @@ describe("SVG Inspector 엣지 케이스 테스트", () => {
 
     const result = validateSVG(svgWithSpecialChars);
     expect(result.isValid).toBe(true);
-    expect(result.errors.length).toBe(0);
+    expect(result.errors).toHaveLength(0);
   });
 
   test("CDATA 섹션이 포함된 SVG를 검증합니다", () => {
@@ -70,7 +75,7 @@ describe("SVG Inspector 엣지 케이스 테스트", () => {
 
     const result = validateSVG(svgWithCDATA);
     expect(result.isValid).toBe(true);
-    expect(result.errors.length).toBe(0);
+    expect(result.errors).toHaveLength(0);
   });
 
   test("foreignObject가 포함된 SVG를 검증합니다", () => {
@@ -87,7 +92,7 @@ describe("SVG Inspector 엣지 케이스 테스트", () => {
 
     const result = validateSVG(svgWithForeignObject);
     expect(result.isValid).toBe(true);
-    expect(result.errors.length).toBe(0);
+    expect(result.errors).toHaveLength(0);
   });
 
   test("주석이 포함된 SVG를 검증합니다", () => {
@@ -104,6 +109,6 @@ describe("SVG Inspector 엣지 케이스 테스트", () => {
 
     const result = validateSVG(svgWithComments);
     expect(result.isValid).toBe(true);
-    expect(result.errors.length).toBe(0);
+    expect(result.errors).toHaveLength(0);
   });
 });

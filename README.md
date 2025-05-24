@@ -117,18 +117,35 @@ The test suite includes:
 - Edge case tests
 - File-based tests
 
-## Code Quality
+## Code Style & Quality
 
-This project uses ESLint to enforce code quality and style guidelines. To run the linter:
+This project uses ESLint and Prettier to enforce code quality and style guidelines.
+
+### Code Style Guidelines
+
+- Double quotes for strings
+- 2 spaces for indentation
+- Maximum line length of 100 characters
+- Semicolons at the end of statements
+- Unix line endings (LF)
+
+### Available Commands
 
 ```sh
+# Run ESLint
 npm run lint
-```
 
-To automatically fix linting issues:
-
-```sh
+# Fix ESLint issues automatically
 npm run lint:fix
+
+# Format code using Prettier
+npm run format
+
+# Check if code is properly formatted
+npm run format:check
+
+# Run both linting and formatting
+npm run style
 ```
 
 ## Continuous Integration
@@ -136,6 +153,7 @@ npm run lint:fix
 We use GitHub Actions for continuous integration. The following checks are run on each push and pull request:
 
 - Code linting
+- Code formatting
 - Test execution on multiple Node.js versions (16.x, 18.x, 20.x)
 - Test coverage reporting
 

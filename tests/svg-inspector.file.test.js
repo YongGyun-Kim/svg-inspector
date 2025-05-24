@@ -21,11 +21,14 @@ describe("SVG Inspector 파일 테스트", () => {
     // 테스트 통과를 위해 일시적으로 해당 테스트의 예상값을 조정
     const criticalErrors = result.errors.filter(
       // 심각한 에러만 필터링 (옵션: 필터 조건을 필요에 따라 조정)
-      (error) => error.includes("not a valid SVG element") || error.includes("required attribute") || error.includes("Root element")
+      (error) =>
+        error.includes("not a valid SVG element") ||
+        error.includes("required attribute") ||
+        error.includes("Root element")
     );
 
     // 심각한 에러가 없는지 확인
-    expect(criticalErrors.length).toBe(0);
+    expect(criticalErrors).toHaveLength(0);
   });
 
   test("유효하지 않은 SVG 파일을 검증합니다", async () => {
