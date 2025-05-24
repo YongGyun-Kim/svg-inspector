@@ -2,6 +2,10 @@
 
 SVG Inspector is a comprehensive SVG validator for Node.js that strictly adheres to the W3C SVG 1.1 (Second Edition) and SVG 2 specifications. It validates SVG files by checking proper elements, attributes, structure, and value formats. All rule violations are reported with detailed error messages.
 
+![CI](https://github.com/YongGyun-Kim/svg-inspector/actions/workflows/ci.yml/badge.svg)
+[![npm version](https://img.shields.io/npm/v/svg-inspector.svg)](https://www.npmjs.com/package/svg-inspector)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 ## Features
 
 - **Comprehensive Element & Attribute Validation:**  
@@ -98,6 +102,12 @@ The library includes comprehensive test coverage to ensure reliability. To run t
 npm test
 ```
 
+To generate a test coverage report:
+
+```sh
+npm run test:coverage
+```
+
 The test suite includes:
 
 - Basic functionality tests
@@ -106,6 +116,28 @@ The test suite includes:
 - Advanced SVG feature tests (gradients, paths, transforms)
 - Edge case tests
 - File-based tests
+
+## Code Quality
+
+This project uses ESLint to enforce code quality and style guidelines. To run the linter:
+
+```sh
+npm run lint
+```
+
+To automatically fix linting issues:
+
+```sh
+npm run lint:fix
+```
+
+## Continuous Integration
+
+We use GitHub Actions for continuous integration. The following checks are run on each push and pull request:
+
+- Code linting
+- Test execution on multiple Node.js versions (16.x, 18.x, 20.x)
+- Test coverage reporting
 
 ## Contributing
 
